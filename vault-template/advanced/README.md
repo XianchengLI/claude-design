@@ -54,3 +54,31 @@ this is machine-specific and MUST be changed):
 ```
 
 (Requires Python on PATH. Use forward slashes or escaped backslashes in the path.)
+
+## 3. skill-map — living inventory of every installed skill/command
+
+Generates a `Skills/` folder in the vault: one note per installed Claude Code
+skill/command (global `~/.claude`, every project's `.claude/`, enabled plugins),
+category hub notes, and a `Skill-Index.md` entry point. The Obsidian graph then
+renders each category as a hub node with its skills around it.
+
+Two-layer notes: everything above the `%% MANUAL %%` marker is regenerated on
+every run; everything below is yours (usage notes, gotchas, provenance flags)
+and always preserved. Removed skills get `status: removed`, never auto-deleted.
+
+**Install**:
+- `scripts/skill_map.py` → `<vault>/.claude/scripts/skill_map.py`
+- `scripts/skill_map_config.example.json` → `<vault>/.claude/scripts/skill_map_config.json`
+  (edit `projects_root`, `vault_folder_name`, and the category lists)
+- `skills/skill-map/SKILL.md` → `<vault>/.claude/skills/skill-map/SKILL.md`
+- `templates/Candidate-Skills.md` and `templates/Skill-Lineage.md` → `<vault>/Skills/`
+  (two manual registries: skills you evaluated but skipped — with flip conditions — and
+  skills you replaced/retired — so returning candidates are recognized instantly)
+
+Run: `python .claude/scripts/skill_map.py` (or `/skill-map`). Re-run after every
+install/removal; new skills land in an Uncategorized hub until you assign them
+in the config. Pairs with the `skill-adoption` skill (repo root `skills/`) —
+its rules 8–9 write into these registries.
+
+Graph tip: filter `-path:Skills/` out of your main graph view, and open a local
+graph on `Skill-Index.md` (depth 2) when you want the skill map view.

@@ -1,0 +1,10 @@
+{
+  "projects_root": "C:/Users/<you>/Documents",
+  "vault_folder_name": "<Your-Vault-Folder-Name>",
+  "categories": {
+    "Academic-Writing": ["scientific-writing"],
+    "Literature-Citation": ["citation-management", "literature-review"],
+    "Vault-Ops": ["vault-health", "skill-map"],
+    "General-Utilities": ["debate"]
+  }
+}
