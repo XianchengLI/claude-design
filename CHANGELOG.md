@@ -2,6 +2,15 @@
 
 简单版更新记录：每条写"加了什么、解决什么问题、怎么用"。
 
+## 2026-08-19 — 文献技能包上线（academic-literature-skills）
+
+`skills/academic-literature-skills/`：两个可安装技能——`literature-review`（系统化检索 →
+筛选 → 主题式综合，关键引文强制带页码级出处指针）+ `citation-management`（三段式引用
+核查：元数据 → 论点-引文匹配（默认读全文）→ 全稿台账审计，投稿硬指标 0 条未核查）。
+附台账模板和 BibTeX 校验脚本；脚本能抓"DOI 能解析但指向另一篇论文"这类最高发的引用
+错误（真实审计中 9 个错误里 7 个是这类）。源自 K-Dense 技能包，用我们自己稿件的真实
+审计大幅扩展。文件夹直接拷进 `~/.claude/skills/`，或下载同名 zip。
+
 ## 2026-08-19 — vault-template 同步：三层模型 + vault-health 检查 6
 
 把 vault 侧实际用起来之后的两处改进同步进模板：
