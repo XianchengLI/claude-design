@@ -11,6 +11,13 @@ Read-only structural audit (no LLM). Detects:
                               (writing-rules.md requirement)
   5. Rotation reminder      — CLAUDE.md Recent Activity oldest entry older
                               than --window-days (rolling-window rule)
+  6. MOC layer integrity    — notes tagged `moc` with zero outgoing links;
+                              hub-scale notes (>=15 out-links) missing the
+                              `moc` tag; Skills/Categories notes unmarked.
+                              Broken-link report also ranks dangling targets
+                              by frequency (most-wanted missing notes).
+                              (Checks 6 stolen from arscontexta /
+                              second-brain-lint survey, 2026-08-18.)
 
 Usage:
   python .claude/scripts/vault_health.py            # report to stdout
@@ -26,6 +33,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from collections import Counter
 from datetime import date, datetime
 from pathlib import Path
 
@@ -242,6 +250,40 @@ def main() -> None:
             oldest_days = days_ago(min(dates))
             rotation_due = oldest_days > args.window_days
 
+    # ---- 6. MOC layer integrity ---------------------------------------------
+    def has_moc_tag(text: str) -> bool:
+        if not text.startswith("---") or text.count("---") < 2:
+            return False
+        head = text.split("---", 2)[1]
+        return bool(re.search(r"^tags\s*:.*[\[\s,]moc[\]\s,]|^\s*-\s+moc\s*$",
+                              head, re.M))
+
+    dangling_freq = [(t, c) for t, c in
+                     Counter(t for _, t in broken).most_common() if c >= 2]
+    outdeg = {p: len(link_targets(prose[p])) for p in notes}
+    moc_no_links: list[str] = []
+    hub_unmarked: list[tuple[str, int]] = []
+    cat_unmarked: list[str] = []
+    moc_forbidden: list[str] = []
+    for p in notes:
+        rel = p.relative_to(VAULT).as_posix()
+        is_moc = has_moc_tag(texts[p])
+        # L2 hard rule: chronicle notes (Daily/, Sessions/ digests+archive)
+        # are never MOC — layer is defined by function, not degree
+        # (writing-rules Layer Model)
+        if is_moc and p.parent.name in {"Daily", "Sessions"}:
+            moc_forbidden.append(rel)
+        if is_moc and outdeg[p] == 0:
+            moc_no_links.append(rel)
+        # Chronicles (Daily/, Sessions/) excluded: they accumulate many links
+        # by nature yet are L2 by function, never MOC — suggesting promotion
+        # would contradict the hard rule above
+        if (not is_moc and outdeg[p] >= 15
+                and p.parent.name not in {"Daily", "Sessions"}):
+            hub_unmarked.append((rel, outdeg[p]))
+        if rel.startswith("Skills/Categories/") and not is_moc:
+            cat_unmarked.append(rel)
+
     # ---- report --------------------------------------------------------------
     lines = []
     add = lines.append
@@ -256,6 +298,9 @@ def main() -> None:
         add(f"- `{src}` → `[[{target}]]`")
     if not broken:
         add("- none ✅")
+    if dangling_freq:
+        add("- most-wanted missing targets (dangling ≥2×): "
+            + ", ".join(f"`[[{t}]]`×{c}" for t, c in dangling_freq))
     add("")
 
     add(f"## 2. Active-project status drift — {len(drift)} of {len(active)}")
@@ -297,6 +342,24 @@ def main() -> None:
             "rotate to `Sessions/Activity-Archive.md`")
     else:
         add(f"- within window (oldest entry {oldest_days}d old) ✅")
+    add("")
+
+    n_moc_issues = (len(moc_no_links) + len(hub_unmarked) + len(cat_unmarked)
+                    + len(moc_forbidden))
+    add(f"## 6. MOC layer integrity — {n_moc_issues} issue(s)")
+    for rel in moc_forbidden:
+        add(f"- ❌ Daily note tagged `moc` — forbidden (L2 is never an index, "
+            f"whatever its link count): `{rel}`")
+    for rel in moc_no_links:
+        add(f"- tagged `moc` but zero outgoing links: `{rel}`")
+    for rel, n in sorted(hub_unmarked, key=lambda x: -x[1]):
+        add(f"- hub-scale note ({n} out-links) without `moc` tag: `{rel}` — "
+            "mark it or confirm it is content, not index")
+    for rel in cat_unmarked:
+        add(f"- Skills/Categories note missing `moc` tag: `{rel}` "
+            "(regenerate via /skill-map)")
+    if not n_moc_issues:
+        add("- MOC layer consistent ✅")
 
     report = "\n".join(lines) + "\n"
     print(report)

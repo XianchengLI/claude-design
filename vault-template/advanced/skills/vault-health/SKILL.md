@@ -27,7 +27,7 @@ EXCEPT trivial mechanical repairs the user already approved in the same session.
 Per-section guidance:
 
 1. **Broken wikilinks** — three distinct causes; label each:
-   - typo/rename (e.g. `[[PD Pilot]]` vs `PD-Pilot`) → fix the link;
+   - typo/rename (e.g. `[[My Project]]` vs `My-Project`) → fix the link;
    - missing People note for a real person mentioned in Sessions → offer to
      create `People/<Name>.md` (Sessions links are allowed to dangle briefly —
      they mark notes worth creating, per writing-rules carve-out);
@@ -42,6 +42,14 @@ Per-section guidance:
    Safe to fix mechanically after user confirms the list.
 5. **Rotation** — if flagged, perform the Recent Activity rotation per the
    rule in CLAUDE.md (move old entries verbatim to `Sessions/Activity-Archive.md`).
+6. **MOC layer integrity** — three findings, three fixes: moc-tagged note with
+   zero out-links → either add the missing index links or reclassify it as a
+   content page (Built-in-Skills precedent — indexes of vault-external items
+   are reference pages, not MOCs); hub-scale note without `moc` → propose
+   marking it (user confirms; Daily notes are exempt by design); unmarked
+   Skills/Categories note → just rerun `/skill-map`. Also check section 1's
+   "most-wanted missing targets" line — a target dangling ≥2× is usually a
+   People/Daily note worth creating rather than a typo.
 
 ## Cadence
 
