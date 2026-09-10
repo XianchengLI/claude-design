@@ -23,6 +23,14 @@ Claude Code picks them up automatically; invoke by asking for a literature revie
 
 ## Updates
 
+> [!note] Source of truth
+> The two skill folders here are a **published snapshot**, not the working copies. The live
+> versions live in `../academic/` (junction-linked into each paper repo by
+> `scripts/link_academic_skills.ps1`); upgrade them there via the `skill-adoption` workflow.
+> To refresh this bundle, copy `../academic/{citation-management,literature-review}` over the
+> folders here, re-zip, and add a dated entry below. Verified identical 2026-09-09.
+
+
 **2026-08-19** (bundle refreshed from live skills):
 
 - `validate_bibtex.py --check-dois` now catches **"DOI resolves but points to a different

@@ -2,6 +2,35 @@
 
 简单版更新记录：每条写"加了什么、解决什么问题、怎么用"。
 
+## 2026-09-09（补） — 修：`@~/...` 导入不生效，学术规则改为仓内副本
+
+同日发现上一条里的规则导入是**静默失效**的：Claude Code 的 `@` 导入只解析仓内的真实相对路径，
+`@~/...`、`@C:/...` 和 junction 后面的文件一律无声忽略（同一个仓里放两个标记实测，只有 `@./.claude/x.md` 被加载）。
+净效果是四条学术规则从全局 CLAUDE.md 拿掉后并没有在论文仓接上，比迁移前更差。
+改法：`link` 把 `rules/academic-rules.md` 复制成 `<repo>/.claude/academic-rules.md`（同样写进 `.git/info/exclude`），
+`CLAUDE.local.md` 改写成 `@./.claude/academic-rules.md`，旧的 `@~/...` 行自动清掉。
+副本会过期，所以补了三件事：`doctor` 用 SHA-256 比对副本与中央文件；`scripts/linked-repos.txt` 登记已挂仓库；
+`link -All` / `doctor -All` 一次覆盖全部（改完规则跑 `link -All`）。
+另外写文件改成无 BOM UTF-8：PS 5.1 的 `-Encoding UTF8` 会在 `.git/info/exclude` 第一行加 BOM，那行就不再是注释而变成一条 pattern。
+17 个仓已重跑，`doctor -All` 全部 `17/17 · rules copy: ok`，并在 JMIR 与 PD_pilot_overleaf 新 session 实测规则确实加载。
+
+## 2026-09-09 — 学术 skill 集中存放，论文仓按需挂载（skills/academic + link_academic_skills.ps1）
+
+17 个学术 skill（nature-* 十二个、literature-review、citation-management、latex-to-word、scientific-writing、lit-mcp）
+从 `~/.claude/skills/` 搬到 `skills/academic/`，不再在每个项目的每个 session 里带着约 3k token 的描述。
+论文仓根目录跑一次 `scripts/link_academic_skills.ps1`：用 NTFS junction 挂进 `.claude/skills/`（无需管理员），
+忽略规则写进 `.git/info/exclude`（不动共享的 .gitignore），并生成 `CLAUDE.local.md` 导入 `rules/academic-rules.md`
+（引文核验、数据可用性声明、Methods/Results 分离、双仓结构，从全局 CLAUDE.md 搬出）。`doctor` 查悬空链接，`unlink` 撤掉。
+实测：git clean / rm -rf / Remove-Item 都只删链接不删中央文件；junction 挂进来的 skill 能被新 session 加载。
+
+## 2026-09-06 — 打卡与工时台账工具合并为一份（scripts/timesheet）
+
+`scripts/timesheet/`：`timesheet_clock.py`（打卡 start / stop / status / cancel / info，进一法取整到半小时）、
+`timesheet_audit.py`（从 Claude Code transcript 出工作块；`--window` 列出一段打卡内所有 session 做了什么、改了哪些文件）、
+`timesheet_report.py`（台账出图、对外页、对外 CSV）。解决的问题：两个项目各存一份脚本和 skill，已经各改各的，
+改一处漏一处。用法：项目根目录放一个 `timesheet.json`（示例 `timesheet.example.json`），三个用户级 skill
+`/clock-in` `/clock-out` `/timesheet` 在任何项目里都能用，没有配置的项目会直接说"本项目不记工时"。详见目录内 README。
+
 ## 2026-08-19 — 文献技能包上线（academic-literature-skills）
 
 `skills/academic-literature-skills/`：两个可安装技能——`literature-review`（系统化检索 →

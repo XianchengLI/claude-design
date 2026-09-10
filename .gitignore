@@ -1,0 +1,14 @@
+# Third-party demo figures vendored under nature-figure.
+# Upstream: https://github.com/ChenLiu-1996/figures4papers
+# The bundled THIRD_PARTY_NOTICES.md records that upstream exposes no LICENSE and that the files
+# may not be redistributed or published. This repository is public, so the images stay local;
+# only the notice is committed, so a clone knows what is missing and where it came from.
+# Restore: git clone https://github.com/ChenLiu-1996/figures4papers into that directory.
+skills/academic/nature-figure/assets/figures4papers/*
+!skills/academic/nature-figure/assets/figures4papers/THIRD_PARTY_NOTICES.md
+
+# Machine-local: absolute paths of the repos linked by scripts/link_academic_skills.ps1.
+# Rebuilt automatically by running `link` in a repo.
+scripts/linked-repos.txt
+
+.DS_Store
