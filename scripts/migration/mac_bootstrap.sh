@@ -45,18 +45,19 @@ git config --global user.email "xiancheng.li@hotmail.com"
 git config --global --add safe.directory "$HOME/.claude"
 
 step "4. ~/.claude from claude-config"
+# Overlay, never move: a running Claude Code session (e.g. the one executing this
+# script from VS Code) keeps writing into ~/.claude, so the clone goes to a temp
+# dir and is rsynced over the existing folder. Tracked files take the repo's
+# version; untracked local files (credentials, sessions) are kept.
 if [ -d "$HOME/.claude/.git" ]; then
   git -C "$HOME/.claude" pull --ff-only
 else
-  if [ -e "$HOME/.claude" ]; then
-    # a fresh `claude` run or the lark install may already have created it: keep its files
-    mv "$HOME/.claude" "$HOME/.claude.pre-migration"
-  fi
-  gh repo clone "$GH_USER/claude-config" "$HOME/.claude"
-  if [ -d "$HOME/.claude.pre-migration" ]; then
-    rsync -a --ignore-existing "$HOME/.claude.pre-migration/" "$HOME/.claude/"
-    rm -rf "$HOME/.claude.pre-migration"
-  fi
+  tmp=$(mktemp -d)
+  gh repo clone "$GH_USER/claude-config" "$tmp/claude-config"
+  mkdir -p "$HOME/.claude"
+  rsync -a "$tmp/claude-config/" "$HOME/.claude/"
+  rm -rf "$tmp"
+  git -C "$HOME/.claude" status --short | head -5 || true
 fi
 
 step "5. Memory slugs: Windows prefix -> Mac prefix"
