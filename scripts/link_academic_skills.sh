@@ -101,7 +101,7 @@ do_link() {
   set_import_line
   {
     printf '%s\n' "CLAUDE.local.md" "$RULES_REL"
-    for s in "${linked[@]}"; do printf '.claude/skills/%s/\n' "$s"; done
+    for s in "${linked[@]}"; do printf '.claude/skills/%s\n' "$s"; done  # no trailing slash: symlinks are files to git
   } | write_exclude_block
   registry_add
   echo "[$tag] linked ${#linked[@]} skill(s); rules copied to $RULES_REL"
