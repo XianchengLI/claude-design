@@ -12,3 +12,5 @@ skills/academic/nature-figure/assets/figures4papers/*
 scripts/linked-repos.txt
 
 .DS_Store
+__pycache__/
+*.pyc

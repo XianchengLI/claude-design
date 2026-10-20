@@ -1,0 +1,30 @@
+{
+  "project": "my-project",
+  "level": 2,
+  "files": {
+    "sessions": "notes/SESSIONS.md",
+    "tasks": "notes/tasks.md",
+    "handover": "notes/handover.md",
+    "inbox": "notes/CLAUDE_inbox.md",
+    "tower_log": "notes/tower_log.md",
+    "memory": "MEMORY.md",
+    "claude_md": "CLAUDE.md",
+    "decisions": "notes/decisions.md",
+    "gotchas": "notes/gotchas.md",
+    "judge_dir": "data/judge_bundles"
+  },
+  "task_sections": {"doing": "In progress", "queue": "Queue", "done": "Done"},
+  "shared_files": ["MEMORY.md", "notes/tasks.md", "notes/decisions.md", "notes/gotchas.md"],
+  "code_repos": [],
+  "stale_hours": 2,
+  "dead_hours": 24,
+  "limits": {
+    "max_workers": 3,
+    "max_heavy": 1,
+    "ctx_soft_k": 150,
+    "ctx_hard_k": 200,
+    "start_card_minutes": 15,
+    "claude_md_chars": 15000
+  },
+  "timesheet": false
+}

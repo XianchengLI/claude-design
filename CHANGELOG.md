@@ -2,6 +2,14 @@
 
 简单版更新记录：每条写"加了什么、解决什么问题、怎么用"。
 
+## 2026-09-19 — 多 session 协作起步包（scripts/tower + skills/tower）
+
+把 capp-career-agent 的多 session 协作流程抽成通用版本，任何项目一条命令就能接入：
+`python scripts/tower/tower_init.py init --project <repo> --level 2|3`。分级：L1 不装（用 `/wrap`）；L2 = SESSIONS hook（登记 / 独占拦截 / CLAUDE.md 写权）+ 任务清单 + `task-close` + 判断包；L3 再加控制塔岗（`tower-in` / `tower-out`、接力棒、控制塔日志、上下文实测）。
+skill 放在 `skills/tower/`，按项目用 junction 挂载，规则渲染到 `<repo>/.claude/tower-rules.md`，由 `CLAUDE.local.md` 导入，都沿用 academic 那套做法：不装的项目零成本，项目自己的 CLAUDE.md 不动。
+CAPP 事故补丁里有四条改成了代码：CLAUDE.md 字数预算警告（hook）、上下文实测（`ctx_usage.py`）、部署侧依赖段（`task-close`）、付费调用存盘（规则片段）。
+skill 故意不与 CAPP 项目版同名，CAPP 保留原版照常运行。已在临时仓完成 init / hook 登记 / 独占拦截 / CLAUDE.md 写权 / 预算警告 / 重复 init / doctor / unlink 全流程实测。方法与评估见 Vault `Tools/Multi-Session-Control-Tower.md`。
+
 ## 2026-09-09（补） — 修：`@~/...` 导入不生效，学术规则改为仓内副本
 
 同日发现上一条里的规则导入是**静默失效**的：Claude Code 的 `@` 导入只解析仓内的真实相对路径，
