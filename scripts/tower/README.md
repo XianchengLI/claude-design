@@ -37,6 +37,7 @@ python ~/Documents/claude-design/scripts/tower/tower_init.py unlink --project <�
 | `tower_init.py` | init / doctor / unlink |
 | `sessions_hook.py` | SessionStart 登记并打印 SESSIONS 表、任务摘要、代码仓 worktree 和 CLAUDE.md 预算警告；PreToolUse 拦截写别人独占的文件，以及非 ✓ session 改 CLAUDE.md；SessionEnd 删行。hook 出错一律放行 |
 | `ctx_usage.py` | 从 transcript 的 usage 字段读 session 真实上下文，不靠自估 |
+| `ctx_scan.py` | 全项目扫一遍：各 session 峰值、干活 session 过 200k / 300k / 400k 的个数、第一次改源码时的上下文（摸代码成本）、单个 session 的上下文构成（`--detail`） |
 | `tower_common.py` | 找项目根、读配置（`--project` > `TOWER_PROJECT` > 从当前目录向上找 tower.json） |
 | `templates/` | tower.json 示例、规则片段（L2 主体 + L3 附加）、各正本模板 |
 
